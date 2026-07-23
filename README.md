@@ -77,6 +77,24 @@
 
 任务选择、反馈循环与提交规范等行为均在 [`ralph/prompt.md`](ralph/prompt.md) 中定义，可按项目实际需要调整（例如替换测试/lint 命令）。
 
+## 引入到你的项目
+
+想把 `.qoder` 和 `ralph` 两个文件夹快速复制进你正在开发的项目，只需 `cd` 到目标项目目录，运行下面这条命令：
+
+```bash
+git clone --depth=1 https://github.com/astordu/qoderharness /tmp/qh \
+  && cp -R /tmp/qh/.qoder /tmp/qh/ralph . \
+  && rm -rf /tmp/qh
+```
+
+它做了三件事：
+
+1. 把本仓库浅克隆（只取最新一版）到临时目录 `/tmp/qh`；
+2. 把 `.qoder` 和 `ralph` 复制到**当前目录**；
+3. 删掉临时克隆，保持干净。
+
+> ⚠️ 如果目标项目里已存在同名的 `.qoder` 或 `ralph`，`cp -R` 会覆盖其中的同名文件，请谨慎在空项目或已备份的项目中使用。
+
 ## 快速开始
 
 1. 将本仓库的 `.qoder/skills/` 放入你的 Qoder 工作区（或直接在本仓库中使用）。
