@@ -1,42 +1,45 @@
-# Issue tracker: GitHub
+# Issue trackerï¼šGitHub
 
-Issues and PRs for this repo live as GitHub issues. Use the `gh` CLI for all operations.
+æœ¬ä»“åº“çš„ issue å’Œ PR ä»¥ GitHub issue çš„å½¢å¼å­˜æ”¾ã€‚æ‰€æœ‰æ“ä½œéƒ½ä½¿ç”¨ `gh` CLIã€‚
 
-## Conventions
+## çº¦å®š
 
-- **Create an issue**: `gh issue create --title "..." --body "..."`. Use a heredoc for multi-line bodies.
-- **Read an issue**:  gh issue view <number> --comments`, filtering comments by `jq` and also fetching labels.
-- **List issues**: `gh issue list --state open --json number,title,body,labels,comments --jq '[.[] |{number, title, body, labels: [.labels[].name], comments: [.comments[].body]}]' with appropriate `--label` and `--state` filters.
-- **Comment on an issue**: `gh issue comment <number> --body "..."`
-- **Apply / remove labels**: `gh issue edit <number> --add-label "..."` / `--remove-label "..."`
-- **Close**: `gh issue close <number> --comment "..."`
+- **åˆ›å»º issue**ï¼š`gh issue create --title "..." --body "..."`ã€‚å¤šè¡Œæ­£æ–‡ç”¨ heredocã€‚
+- **è¯»å– issue**ï¼š`gh issue view <number> --comments`ï¼Œç”¨ `jq` è¿‡æ»¤è¯„è®ºå¹¶ä¸€å¹¶è·å–æ ‡ç­¾ã€‚
+- **åˆ—å‡º issue**ï¼š`gh issue list --state open --json number,title,body,labels,comments --jq '[.[] |{number, title, body, labels: [.labels[].name], comments: [.comments[].body]}]'`ï¼Œé…åˆåˆé€‚çš„ `--label` å’Œ `--state` è¿‡æ»¤æ¡ä»¶ã€‚
+- **åœ¨ issue ä¸Šè¯„è®º**ï¼š`gh issue comment <number> --body "..."`
+- **æ·»åŠ  / ç§»é™¤æ ‡ç­¾**ï¼š`gh issue edit <number> --add-label "..."` / `--remove-label "..."`
+- **å…³é—­**ï¼š`gh issue close <number> --comment "..."`
 
-Infer the repo from `git remote -v` â€” `gh` does this automatically when run inside a clone.
+ä» `git remote -v` æ¨æ–­ä»“åº“â€”â€”åœ¨ä¸€ä¸ª clone å†…è¿è¡Œæ—¶ `gh` ä¼šè‡ªåŠ¨è¿™ä¹ˆåšã€‚
 
-## Pull requests as a triage surface
+## æŠŠ pull request ä½œä¸ºåˆ†è¯Šç•Œé¢
 
-**PRs as a request surface: no.** _(Set to `yes` if this repo treats external PRs as feature requests; `/triage` reads this flag.)]
+**æŠŠ PR ä½œä¸ºè¯·æ±‚ç•Œé¢ï¼šå¦ã€‚** _ï¼ˆå¦‚æœæœ¬ä»“åº“æŠŠå¤–éƒ¨ PR å½“ä½œåŠŸèƒ½è¯·æ±‚ï¼Œå°±è®¾ä¸º `yes`ï¼›`/triage` ä¼šè¯»å–è¿™ä¸ªæ ‡å¿—ã€‚ï¼‰_
 
-When set to `yes`, PRs run through the same labels and states as issues, using the `gh pr` equivalents:
+å½“è®¾ä¸º `yes` æ—¶ï¼ŒPR èµ°ä¸ issue ç›¸åŒçš„æ ‡ç­¾å’ŒçŠ¶æ€ï¼Œä½¿ç”¨ `gh pr` çš„å¯¹åº”å‘½ä»¤ï¼š
 
-- **Read a PR**: `gh pr view <number> --comments` and `gh pr diff <number>` for the diff.
-- **List external PRs for triage**: `gh pr list --state open --json number,title,body,labels,author,authorAssociation,comments` then keep only `authorAssociation` of `CONTRIBUTOR`, `FIRST_TIME_CONTRIBUTOR`, or `NONE` (drop `OWNER`/`MEMBER`/`COLLABORATOR`).
-- **Comment / label / close**: `gh pr comment`, `gh pr edit --add-label`/`--remove-label`, `gh pr close`.
+- **è¯»å– PR**ï¼š`gh pr view <number> --comments`ï¼Œdiff ç”¨ `gh pr diff <number>`ã€‚
+- **åˆ—å‡ºå¾…åˆ†è¯Šçš„å¤–éƒ¨ PR**ï¼š`gh pr list --state open --json number,title,body,labels,author,authorAssociation,comments`ï¼Œç„¶ååªä¿ç•™ `authorAssociation` ä¸º `CONTRIBUTOR`ã€`FIRST_TIME_CONTRIBUTOR` æˆ– `NONE` çš„ï¼ˆå‰”é™¤ `OWNER`/`MEMBER`/`COLLABORATOR`ï¼‰ã€‚
+- **è¯„è®º / æ‰“æ ‡ç­¾ / å…³é—­**ï¼š`gh pr comment`ã€`gh pr edit --add-label`/`--remove-label`ã€`gh pr close`ã€‚
 
-GitHub shares one number space across issues and PRs, so a bare #42` may be either â€” resolve with `gh pr view 42` and fall back to `gh issue view 42`.
+GitHub åœ¨ issue å’Œ PR ä¹‹é—´å…±äº«åŒä¸€ä¸ªç¼–å·ç©ºé—´ï¼Œæ‰€ä»¥è£¸å†™çš„ `#42` å¯èƒ½æ˜¯å…¶ä¸­ä»»ä¸€ä¸ªâ€”â€”ç”¨ `gh pr view 42` è§£æï¼Œå¤±è´¥æ—¶å›é€€åˆ° `gh issue view 42`ã€‚
 
-## When a skill says "publish to the issue tracker"
+## å½“æŸä¸ªæŠ€èƒ½è¯´"å‘å¸ƒåˆ° issue tracker"
 
-Create a GitHub issue.
+åˆ›å»ºä¸€ä¸ª GitHub issueã€‚
 
-## When a skill says "fetch the relevant ticket"
+## å½“æŸä¸ªæŠ€èƒ½è¯´"è·å–ç›¸å…³å·¥å•"
 
-Run `gh issue view <number> --comments`.
+è¿è¡Œ `gh issue view <number> --comments`ã€‚
 
-## Wayfinding operations
+## å¯»è·¯ï¼ˆWayfindingï¼‰æ“ä½œ
 
-Used by `/wayfinder`. The **map** is a single issue with **child** issues as tickets.
+ç”± `/wayfinder` ä½¿ç”¨ã€‚**åœ°å›¾ï¼ˆmapï¼‰** æ˜¯å•ä¸ª issueï¼Œå…¶ **å­ï¼ˆchildï¼‰** issue ä½œä¸ºå·¥å•ã€‚
 
-- **Map**: a single issue labelled `wayfinder:map`, holding the Notes / Decisions-so-far / Fog body. `gh issue create --label wayfinder:map`.
-- **Child ticket**: an issue linked to the map as a GitHub sub-issue (`gh api` on the sub-issues endpoint). Where sub-issues aren't enabled, add the child to a task list in the map body and put `Part of <map>` at the top of the child body. Labels: `wayfinder:<type>` (`Research`/prototype`/`grilling`/`task`). Once claimed, the ticket is assigned to the driving dev.
-- **Blocking**: GitHub's **native issue dependencies** â€” the canonical, UI-visible representation. Add an edge with `gh api --method POST repos/<owner>/<repo>/issues/<child>/dependencies/blocked_by -F issue_id=<blocker-db-id>`, where `<blocker-db-id>` is the blocker's numeric **database id** (`gh api repos/<owner>/<repo>/issues/<n> --jq .id`, _not_ the `#¹Õµ‰•É€½È¹½‘•}¥‘€¤¸¥Ñ!ÕˆÉ•Á½ÉÑÌ¥ÍÍÕ•}‘•Á•¹‘•¹¥•Í}ÍÕµµ…Éä¹‰±½­•‘}‰å€€¡½Á•¸‰±½­•ÉÌ½¹±äƒŠPÑ¡”±¥Ù”…Ñ”¤¸]¡•É”‘•Á•¹‘•¹¥•Ì…É•¸Ğ…Ù…¥±…‰±”°™…±°‰…¬Ñ¼„	±½­•‰äè€Œñ¸ø°€ñ¸ù€±¥¹”…ĞÑ¡”Ñ½À½˜Ñ¡”¡¥±‰½‘ä¸Ñ¥­•Ğ¥ÌÕ¹‰±½­•İ¡•¸•Ù•Éä‰±½­•È¥Ì±½Í•¸(´€¨©É½¹Ñ¥•ÈÅÕ•Éä¨¨è±¥ÍĞÑ¡”µ…ÀÌ½Á•¸¡¥±‘É•¸€¡ ¥ÍÍÕ”±¥ÍĞ€´µÍÑ…Ñ”½Á•¹€°Í½Á•Ñ¼Ñ¡”µ…ÀÌÍÕˆµ¥ÍÍÕ•Ì€¼Ñ…Í¬±¥ÍĞ¤°‘É½À…¹äİ¥Ñ …¸½Á•¸‰±½­•È€¡¥ÍÍÕ•}‘•Á•¹‘•¹¥•Í}ÍÕµµ…Éä¹‰±½­•‘}‰ä€ø€Á€°½È…¸½Á•¸¥ÍÍÕ”¥¸Ñ¡”	±½­•‰å€±¥¹”¤½È…¸…ÍÍ¥¹•”ì™¥ÉÍĞ¥¸µ…À½É‘•Èİ¥¹Ì¸(´€¨©±…¥´¨¨è ¥ÍÍÕ”•‘¥Ğ€ñ¸ø€´µ…‘µ…ÍÍ¥¹•”µ•€ƒŠPÑ¡”Í•ÍÍ¥½¸Ì™¥ÉÍĞİÉ¥Ñ”¸(´€¨©I•Í½±Ù”¨¨è ¥ÍÍÕ”½µµ•¹Ğ€ñ¸ø€´µ‰½‘ä€ˆñ…¹Íİ•Èø‰€°Ñ¡•¸ ¥ÍÍÕ”±½Í”€ñ¸ù€°Ñ¡•¸…ÁÁ•¹„½¹Ñ•áĞÁ½¥¹Ñ•È€¡¥ÍĞ€¬±¥¹¬¤Ñ¼Ñ¡”µ…ÀÌ•¥Í¥½¹ÌµÍ¼µ™…È¸
+- **Map**ï¼šä¸€ä¸ªæ‰“äº† `wayfinder:map` æ ‡ç­¾çš„å•ä¸ª issueï¼Œæ‰¿è½½ Notes / Decisions-so-far / Fog æ­£æ–‡ã€‚`gh issue create --label wayfinder:map`ã€‚
+- **Child ticket**ï¼šä¸€ä¸ªä½œä¸º GitHub å­ issue é“¾æ¥åˆ°åœ°å›¾çš„ issueï¼ˆåœ¨ sub-issues ç«¯ç‚¹ä¸Šç”¨ `gh api`ï¼‰ã€‚åœ¨æœªå¯ç”¨ sub-issues çš„åœ°æ–¹ï¼ŒæŠŠè¯¥å­é¡¹åŠ å…¥åœ°å›¾æ­£æ–‡é‡Œçš„ä»»åŠ¡åˆ—è¡¨ï¼Œå¹¶åœ¨å­é¡¹æ­£æ–‡é¡¶éƒ¨å†™ `Part of <map>`ã€‚æ ‡ç­¾ï¼š`wayfinder:<type>`ï¼ˆ`research`/`prototype`/`grilling`/`task`ï¼‰ã€‚ä¸€æ—¦è¢«è®¤é¢†ï¼Œå·¥å•å°±åˆ†æ´¾ç»™æ¨è¿›å®ƒçš„å¼€å‘è€…ã€‚
+- **Blocking**ï¼šGitHub çš„ **åŸç”Ÿ issue ä¾èµ–**â€”â€”è§„èŒƒçš„ã€UI å¯è§çš„è¡¨ç¤ºã€‚ç”¨ `gh api --method POST repos/<owner>/<repo>/issues/<child>/dependencies/blocked_by -F issue_id=<blocker-db-id>` æ·»åŠ ä¸€æ¡è¾¹ï¼Œå…¶ä¸­ `<blocker-db-id>` æ˜¯é˜»å¡æ–¹çš„æ•°å­— **æ•°æ®åº“ id**ï¼ˆ`gh api repos/<owner>/<repo>/issues/<n> --jq .id`ï¼Œ_ä¸æ˜¯_ é‚£ä¸ª `#number`ï¼‰ã€‚å½“ä¸€ä¸ªå·¥å•æ‰€è¢«é˜»å¡çš„æ¯ä¸ª issue éƒ½å·²å…³é—­æ—¶ï¼Œå®ƒå³è§£é™¤é˜»å¡ã€‚
+- **Frontier**ï¼šæ‰«æåœ°å›¾çš„å­ issueï¼Œæ‰¾å‡ºé‚£äº›å¼€æ”¾ã€æœªé˜»å¡ä¸”æœªåˆ†æ´¾çš„ï¼›ç¼–å·æœ€å°è€…ä¼˜å…ˆã€‚
+- **Claim**ï¼šåœ¨ä»»ä½•å·¥ä½œä¹‹å‰ï¼ŒæŠŠè¯¥ issue åˆ†æ´¾ç»™æ¨è¿›å®ƒçš„å¼€å‘è€…ã€‚
+- **Resolve**ï¼šæŠŠç­”æ¡ˆä½œä¸ºè¯„è®ºå‘å¸ƒï¼Œå…³é—­è¯¥ issueï¼Œç„¶åæŠŠä¸€ä¸ªä¸Šä¸‹æ–‡æŒ‡é’ˆï¼ˆè¦ç‚¹ + é“¾æ¥ï¼‰è¿½åŠ åˆ°åœ°å›¾çš„ Decisions-so-farã€‚

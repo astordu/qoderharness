@@ -1,35 +1,35 @@
 ---
 name: codebase-design
-description: Shared vocabulary for designing deep modules. Use when the user wants to design or improve a module's interface, find deepening opportunities, decide where a seam goes, make code more testable or AI-navigable, or when another skill needs the deep-module vocabulary.
+description: 设计深模块的共享术语体系。当用户想要设计或改进某个模块的接口、寻找加深（deepening）的机会、决定接缝（seam）放在哪里、让代码更易测试或更利于 AI 导航时，或当其他技能需要用到深模块术语时使用。
 ---
 
-# Codebase Design
+# 代码库设计（Codebase Design）
 
-Design **deep modules**: a lot of behaviour behind a small interface, placed at a clean seam, testable through that interface. Use this language and these principles wherever code is being designed or restructured. The aim is leverage for callers, locality for maintainers, and testability for everyone.
+设计**深模块（deep module）**：在小接口背后承载大量行为，置于一个清晰的接缝处，并可通过该接口进行测试。无论在何处设计或重构代码，都使用这套语言和这些原则。目标是：为调用方带来杠杆（leverage），为维护者带来局部性（locality），为所有人带来可测试性（testability）。
 
-## Glossary
+## 术语表
 
-Use these terms exactly — don't substitute "component," "service," "API," or "boundary." Consistent language is the whole point.
+请精确使用这些术语——不要用「组件（component）」「服务（service）」「API」或「边界（boundary）」来替代。语言的一致性正是全部要点所在。
 
-**Module** — anything with an interface and an implementation. Deliberately scale-agnostic: a function, class, package, or tier-spanning slice. _Avoid_: unit, component, service.
+**模块（Module）** —— 任何具有接口和实现的东西。刻意做到与规模无关：可以是一个函数、类、包，或跨层的一段切片。_避免_：单元（unit）、组件（component）、服务（service）。
 
-**Interface** — everything a caller must know to use the module correctly: the type signature, but also invariants, ordering constraints, error modes, required configuration, and performance characteristics. _Avoid_: API, signature (too narrow — they refer only to the type-level surface).
+**接口（Interface）** —— 调用方为正确使用该模块所必须了解的一切：类型签名，以及不变量、顺序约束、错误模式、必需的配置和性能特征。_避免_：API、签名（signature）（太狭窄——它们只指类型层面的表层）。
 
-**Implementation** — what's inside a module, its body of code. Distinct from **Adapter**: a thing can be a small adapter with a large implementation (a Postgres repo) or a large adapter with a small implementation (an in-memory fake). Reach for "adapter" when the seam is the topic; "implementation" otherwise.
+**实现（Implementation）** —— 模块内部的东西，它的代码主体。与**适配器（Adapter）**有别：一个东西可以是「小适配器 + 大实现」（如 Postgres 仓储），也可以是「大适配器 + 小实现」（如内存伪实现）。当接缝是讨论主题时，用「适配器」；否则用「实现」。
 
-**Depth** — leverage at the interface: the amount of behaviour a caller (or test) can exercise per unit of interface they have to learn. A module is **deep** when a large amount of behaviour sits behind a small interface, **shallow** when the interface is nearly as complex as the implementation.
+**深度（Depth）** —— 接口处的杠杆：调用方（或测试）每学习一个单位的接口，能够驱动多少行为。当大量行为藏在小接口背后时，模块是**深（deep）**的；当接口几乎与实现一样复杂时，模块是**浅（shallow）**的。
 
-**Seam** _(Michael Feathers)_ — a place where you can alter behaviour without editing in that place; the *location* at which a module's interface lives. Where to put the seam is its own design decision, distinct from what goes behind it. _Avoid_: boundary (overloaded with DDD's bounded context).
+**接缝（Seam）** _（Michael Feathers）_ —— 一个你无需在此处编辑就能改变行为的位置；模块接口所在的*地点*。接缝放在哪里本身就是一项独立的设计决策，与接缝背后放什么有别。_避免_：边界（boundary）（因与 DDD 的限界上下文含义重叠而被过度使用）。
 
-**Adapter** — a concrete thing that satisfies an interface at a seam. Describes *role* (what slot it fills), not substance (what's inside).
+**适配器（Adapter）** —— 在某个接缝处满足接口的具体事物。它描述的是*角色*（填补哪个槽位），而非实质（内部是什么）。
 
-**Leverage** — what callers get from depth: more capability per unit of interface they learn. One implementation pays back across N call sites and M tests.
+**杠杆（Leverage）** —— 调用方从深度中获得的东西：每学习一个单位的接口就获得更多能力。一份实现可在 N 个调用点和 M 个测试中反复收益。
 
-**Locality** — what maintainers get from depth: change, bugs, knowledge, and verification concentrate in one place rather than spreading across callers. Fix once, fixed everywhere.
+**局部性（Locality）** —— 维护者从深度中获得的东西：变更、缺陷、知识和验证都集中在一处，而非散落到各个调用方。修一次，处处皆修。
 
-## Deep vs shallow
+## 深 vs 浅
 
-**Deep module** = small interface + lots of implementation:
+**深模块** = 小接口 + 大量实现：
 
 ```
 ┌─────────────────────┐
@@ -41,7 +41,7 @@ Use these terms exactly — don't substitute "component," "service," "API," or "
 └─────────────────────┘
 ```
 
-**Shallow module** = large interface + little implementation (avoid):
+**浅模块** = 大接口 + 少量实现（应避免）：
 
 ```
 ┌─────────────────────────────────┐
@@ -51,24 +51,24 @@ Use these terms exactly — don't substitute "component," "service," "API," or "
 └─────────────────────────────────┘
 ```
 
-When designing an interface, ask:
+设计接口时，问自己：
 
-- Can I reduce the number of methods?
-- Can I simplify the parameters?
-- Can I hide more complexity inside?
+- 我能减少方法的数量吗？
+- 我能简化参数吗？
+- 我能把更多复杂性藏进内部吗？
 
-## Principles
+## 原则
 
-- **Depth is a property of the interface, not the implementation.** A deep module can be internally composed of small, mockable, swappable parts — they just aren't part of the interface. A module can have **internal seams** (private to its implementation, used by its own tests) as well as the **external seam** at its interface.
-- **The deletion test.** Imagine deleting the module. If complexity vanishes, it was a pass-through. If complexity reappears across N callers, it was earning its keep.
-- **The interface is the test surface.** Callers and tests cross the same seam. If you want to test *past* the interface, the module is probably the wrong shape.
-- **One adapter means a hypothetical seam. Two adapters means a real one.** Don't introduce a seam unless something actually varies across it.
+- **深度是接口的属性，而非实现的属性。** 一个深模块的内部可以由许多小的、可 mock、可替换的部件组成——它们只是不属于接口的一部分。模块既可以拥有**内部接缝（internal seam）**（对其实现私有，供自身测试使用），也可以在其接口处拥有**外部接缝（external seam）**。
+- **删除测试（deletion test）。** 设想删掉这个模块。如果复杂性随之消失，那它只是一个透传（pass-through）。如果复杂性在 N 个调用方处重新冒出来，那它就是在发挥价值。
+- **接口即测试面（test surface）。** 调用方和测试跨越的是同一个接缝。如果你想测试接口*之外/之内*的东西，那这个模块的形状很可能不对。
+- **一个适配器意味着假想的接缝；两个适配器意味着真实的接缝。** 除非确实有东西在接缝两侧发生变化，否则不要引入接缝。
 
-## Designing for testability
+## 为可测试性而设计
 
-Good interfaces make testing natural:
+好的接口让测试变得自然：
 
-1. **Accept dependencies, don't create them.**
+1. **接受依赖，而非创建依赖。**
 
    ```typescript
    // Testable
@@ -80,7 +80,7 @@ Good interfaces make testing natural:
    }
    ```
 
-2. **Return results, don't produce side effects.**
+2. **返回结果，而非产生副作用。**
 
    ```typescript
    // Testable
@@ -92,23 +92,23 @@ Good interfaces make testing natural:
    }
    ```
 
-3. **Small surface area.** Fewer methods = fewer tests needed. Fewer params = simpler test setup.
+3. **小表面积。** 方法越少 = 需要的测试越少。参数越少 = 测试搭建越简单。
 
-## Relationships
+## 关系
 
-- A **Module** has exactly one **Interface** (the surface it presents to callers and tests).
-- **Depth** is a property of a **Module**, measured against its **Interface**.
-- A **Seam** is where a **Module**'s **Interface** lives.
-- An **Adapter** sits at a **Seam** and satisfies the **Interface**.
-- **Depth** produces **Leverage** for callers and **Locality** for maintainers.
+- 一个**模块（Module）**恰好拥有一个**接口（Interface）**（它向调用方和测试呈现的表层）。
+- **深度（Depth）**是**模块（Module）**的属性，以其**接口（Interface）**为度量基准。
+- **接缝（Seam）**是**模块（Module）**的**接口（Interface）**所在之处。
+- **适配器（Adapter）**位于**接缝（Seam）**处，并满足该**接口（Interface）**。
+- **深度（Depth）**为调用方带来**杠杆（Leverage）**，为维护者带来**局部性（Locality）**。
 
-## Rejected framings
+## 被否决的表述
 
-- **Depth as ratio of implementation-lines to interface-lines** (Ousterhout): rewards padding the implementation. We use depth-as-leverage instead.
-- **"Interface" as the TypeScript `interface` keyword or a class's public methods**: too narrow — interface here includes every fact a caller must know.
-- **"Boundary"**: overloaded with DDD's bounded context. Say **seam** or **interface**.
+- **将深度定义为「实现行数与接口行数之比」**（Ousterhout）：这会奖励往实现里塞水分。我们改用「深度即杠杆」。
+- **将「接口」等同于 TypeScript 的 `interface` 关键字或类的公有方法**：太狭窄——这里的接口包含调用方必须了解的每一个事实。
+- **「边界（Boundary）」**：与 DDD 的限界上下文含义重叠。请说**接缝（seam）**或**接口（interface）**。
 
-## Going deeper
+## 深入了解
 
-- **Deepening a cluster given its dependencies** — see [DEEPENING.md](DEEPENING.md): dependency categories, seam discipline, and replace-don't-layer testing.
-- **Exploring alternative interfaces** — see [DESIGN-IT-TWICE.md](DESIGN-IT-TWICE.md): spin up parallel sub-agents to design the interface several radically different ways, then compare on depth, locality, and seam placement.
+- **在给定依赖的前提下加深一组模块** —— 见 [DEEPENING.md](DEEPENING.md)：依赖分类、接缝纪律，以及「替换而非叠加（replace-don't-layer）」的测试策略。
+- **探索可选的接口方案** —— 见 [DESIGN-IT-TWICE.md](DESIGN-IT-TWICE.md)：并行启动多个子代理，用几种截然不同的方式设计接口，再从深度、局部性和接缝位置上进行对比。

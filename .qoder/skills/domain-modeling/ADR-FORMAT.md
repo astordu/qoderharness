@@ -1,47 +1,47 @@
-# ADR Format
+# ADR 格式
 
-ADRs live in `docs/adr/` and use sequential numbering: `0001-slug.md`, `0002-slug.md`, etc.
+ADR 放在 `docs/adr/` 中，使用顺序编号：`0001-slug.md`、`0002-slug.md`，以此类推。
 
-Create the `docs/adr/` directory lazily — only when the first ADR is needed.
+延迟创建 `docs/adr/` 目录——只在第一次需要 ADR 时才创建。
 
-## Template
+## 模板
 
 ```md
-# {Short title of the decision}
+# {决策的简短标题}
 
-{1-3 sentences: what's the context, what did we decide, and why.}
+{1-3 句话：背景是什么、我们决定了什么、为什么。}
 ```
 
-That's it. An ADR can be a single paragraph. The value is in recording *that* a decision was made and *why* — not in filling out sections.
+就这样。一份 ADR 可以只有一个段落。价值在于记录 *存在* 一次决策以及 *为什么* 做出该决策——而不在于把各个小节填满。
 
-## Optional sections
+## 可选小节
 
-Only include these when they add genuine value. Most ADRs won't need them.
+只在这些小节确实能带来真正价值时才包含它们。大多数 ADR 都用不到。
 
-- **Status** frontmatter (`proposed | accepted | deprecated | superseded by ADR-NNNN`) — useful when decisions are revisited
-- **Considered Options** — only when the rejected alternatives are worth remembering
-- **Consequences** — only when non-obvious downstream effects need to be called out
+- **Status** 前置元数据（`proposed | accepted | deprecated | superseded by ADR-NNNN`）——在决策会被重新审视时有用
+- **Considered Options**（已考虑的选项）——只在被否决的备选方案值得记住时才写
+- **Consequences**（后果）——只在需要指出非显而易见的下游影响时才写
 
-## Numbering
+## 编号
 
-Scan `docs/adr/` for the highest existing number and increment by one.
+扫描 `docs/adr/`，找到现有最大的编号，然后加一。
 
-## When to offer an ADR
+## 何时提议 ADR
 
-All three of these must be true:
+以下三点必须全部成立：
 
-1. **Hard to reverse** — the cost of changing your mind later is meaningful
-2. **Surprising without context** — a future reader will look at the code and wonder "why on earth did they do it this way?"
-3. **The result of a real trade-off** — there were genuine alternatives and you picked one for specific reasons
+1. **难以逆转**——日后改变主意的代价是显著的
+2. **缺乏上下文就会令人意外**——未来的读者看着代码会疑惑"他们究竟为什么要这么做？"
+3. **是一次真实权衡的结果**——确实存在其他可选方案，而你出于特定理由选择了其中之一
 
-If a decision is easy to reverse, skip it — you'll just reverse it. If it's not surprising, nobody will wonder why. If there was no real alternative, there's nothing to record beyond "we did the obvious thing."
+如果一个决策很容易逆转，就跳过它——反正你会把它逆转掉。如果它并不令人意外，就没人会去追问为什么。如果根本没有真正的备选方案，那么除了"我们做了显而易见的事"之外也没什么可记的。
 
-### What qualifies
+### 什么才够格
 
-- **Architectural shape.** "We're using a monorepo." "The write model is event-sourced, the read model is projected into Postgres."
-- **Integration patterns between contexts.** "Ordering and Billing communicate via domain events, not synchronous HTTP."
-- **Technology choices that carry lock-in.** Database, message bus, auth provider, deployment target. Not every library — just the ones that would take a quarter to swap out.
-- **Boundary and scope decisions.** "Customer data is owned by the Customer context; other contexts reference it by ID only." The explicit no-s are as valuable as the yes-s.
-- **Deliberate deviations from the obvious path.** "We're using manual SQL instead of an ORM because X." Anything where a reasonable reader would assume the opposite. These stop the next engineer from "fixing" something that was deliberate.
-- **Constraints not visible in the code.** "We can't use AWS because of compliance requirements." "Response times must be under 200ms because of the partner API contract."
-- **Rejected alternatives when the rejection is non-obvious.** If you considered GraphQL and picked REST for subtle reasons, record it — otherwise someone will suggest GraphQL again in six months.
+- **架构形态。** "我们用的是 monorepo。""写模型是事件溯源的，读模型投影到 Postgres 中。"
+- **上下文之间的集成模式。** "Ordering 和 Billing 通过领域事件通信，而不是同步 HTTP。"
+- **带来锁定效应的技术选型。** 数据库、消息总线、认证提供方、部署目标。不是每个库都要记——只记那些换掉需要花上一个季度的。
+- **边界与范围决策。** "Customer 数据由 Customer 上下文拥有；其他上下文只通过 ID 引用它。"明确的"不做什么"和"做什么"同样有价值。
+- **对显而易见路径的刻意偏离。** "我们用手写 SQL 而不是 ORM，因为 X。"任何一个通情达理的读者会假设情况恰好相反的地方。这些能阻止下一位工程师去"修复"那些本就是刻意为之的东西。
+- **在代码中看不到的约束。** "由于合规要求我们不能用 AWS。""由于合作方 API 合约，响应时间必须低于 200ms。"
+- **当否决理由并不显而易见时，被否决的备选方案。** 如果你考虑过 GraphQL，但出于微妙的原因选择了 REST，就把它记下来——否则半年后又会有人提议用 GraphQL。

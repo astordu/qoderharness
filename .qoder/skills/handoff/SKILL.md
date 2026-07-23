@@ -1,16 +1,16 @@
 ---
 name: handoff
-description: Compact the current conversation into a handoff document for another agent to pick up.
-argument-hint: "What will the next session be used for?"
+description: 将当前对话压缩成一份交接文档，供另一个 agent 接手。
+argument-hint: "下一次会话将用于做什么？"
 disable-model-invocation: true
 ---
 
-Write a handoff document summarising the current conversation so a fresh agent can continue the work. Save to the temporary directory of the user's OS - not the current workspace.
+编写一份交接文档，总结当前对话，以便一个全新的 agent 能够继续这项工作。保存到用户操作系统的临时目录中——不要保存到当前工作区。
 
-Include a "suggested skills" section in the document, which suggests skills that the agent should invoke.
+在文档中包含一个"建议技能"小节，列出该 agent 应当调用的技能。
 
-Do not duplicate content already captured in other artifacts (specs, plans, ADRs, issues, commits, diffs). Reference them by path or URL instead.
+不要重复已在其他产物（规格、计划、ADR、issue、提交、diff）中记录过的内容。改为通过路径或 URL 引用它们。
 
-Redact any sensitive information, such as API keys, passwords, or personally identifiable information.
+对任何敏感信息（如 API 密钥、密码或个人可识别信息）进行脱敏处理。
 
-If the user passed arguments, treat them as a description of what the next session will focus on and tailor the doc accordingly.
+如果用户传入了参数，就把它们当作对下一次会话将聚焦内容的描述，并据此调整文档。

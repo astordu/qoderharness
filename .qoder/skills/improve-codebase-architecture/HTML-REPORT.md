@@ -1,8 +1,8 @@
-# HTML Report Format
+# HTML 报告格式
 
-The architectural review is rendered as a single self-contained HTML file in the OS temp directory. Tailwind and Mermaid both come from CDNs. Mermaid handles graph-shaped diagrams reliably; hand-built divs and inline SVG handle the more editorial visuals (mass diagrams, cross-sections). Mix the two — don't lean on Mermaid for everything, it'll start to look generic.
+架构审查会被渲染成一个自包含的 HTML 文件，放在操作系统的临时目录中。Tailwind 和 Mermaid 都来自 CDN。Mermaid 可靠地处理图状图表；手工构建的 div 和内联 SVG 处理更有编排感的视觉元素（体量图、剖面图）。把两者混用——不要什么都靠 Mermaid，那样会开始显得千篇一律。
 
-## Scaffold
+## 脚手架
 
 ```html
 <!doctype html>
@@ -31,26 +31,26 @@ The architectural review is rendered as a single self-contained HTML file in the
 </html>
 ```
 
-## Header
+## 页眉
 
-Repo name, date, and a compact legend: solid box = module, dashed line = seam, red arrow = leakage, thick dark box = deep module. No introduction paragraph — straight into the candidates.
+仓库名、日期，以及一个紧凑的图例：实心方框 = 模块，虚线 = 接缝，红色箭头 = 泄漏，粗黑边方框 = 深模块。不要引言段落——直接进入候选项。
 
-## Candidate card
+## 候选项卡片
 
-Each candidate is one `<article>`:
+每个候选项是一个 `<article>`：
 
-- **Title** — short, names the deepening (e.g. "Collapse the Order intake pipeline").
-- **Badge row** — recommendation strength (`Strong` = emerald, `Worth exploring` = amber, `Speculative` = slate), plus a tag for the dependency category.
-- **Files** — monospaced list, `font-mono text-sm`.
-- **Before / After diagram** — the centrepiece. Two columns, side by side.
-- **Problem** — one sentence. What hurts.
-- **Solution** — one sentence. What changes.
-- **Wins** — bullets, ≤6 words each.
-- **ADR callout** (if applicable) — one line in an amber-tinted box.
+- **Title**（标题）——简短，点明这次加深（例如 "Collapse the Order intake pipeline / 收拢订单接收流水线"）。
+- **Badge row**（徽章行）——推荐强度（`Strong` = 翠绿，`Worth exploring` = 琥珀，`Speculative` = 石板灰），外加一个标注依赖类别的标签。
+- **Files**（文件）——等宽字体列表，`font-mono text-sm`。
+- **Before / After diagram**（前/后对比图）——核心。两栏并排。
+- **Problem**（问题）——一句话。哪里疼。
+- **Solution**（方案）——一句话。改什么。
+- **Wins**（收益）——要点，每条 ≤6 个词。
+- **ADR callout**（ADR 提示，如适用）——琥珀色调框中的一行字。
 
-## Diagram patterns
+## 图表模式
 
-### Mermaid graph (the workhorse for dependencies / call flow)
+### Mermaid 图（处理依赖 / 调用流的主力）
 
 ```html
 <div class="rounded-lg border border-slate-200 bg-white p-4">
@@ -65,44 +65,44 @@ Each candidate is one `<article>`:
 </div>
 ```
 
-### Hand-built boxes-and-arrows
+### 手工构建的方框与箭头
 
-Modules as `<div>`s with borders and labels. Arrows as inline SVG elements. Use when you want the "after" diagram to feel like one thick-bordered deep module with greyed-out internals.
+模块用带边框和标签的 `<div>` 表示。箭头用内联 SVG 元素表示。当你想让"后"图呈现为一个厚边框的深模块、内部结构灰化时使用。
 
-### Cross-section (good for layered shallowness)
+### 剖面图（适合分层的浅结构）
 
-Stack horizontal bands (`h-12 border-l-4`) to show layers a call passes through. Before: 6 thin layers each doing nothing. After: 1 thick band labelled with the consolidated responsibility.
+堆叠水平的横条（`h-12 border-l-4`）来展示一次调用穿过的层级。前：6 个薄层，各自什么都没做。后：1 个厚横条，标注合并后的职责。
 
-### Mass diagram (good for "interface as wide as implementation")
+### 体量图（适合"接口和实现一样宽"）
 
-Two rectangles per module — one for interface surface area, one for implementation. Before: interface rectangle is nearly as tall as implementation (shallow). After: interface is short, implementation is tall (deep).
+每个模块两个矩形——一个表示接口的表面积，一个表示实现。前：接口矩形几乎和实现一样高（浅）。后：接口矮，实现高（深）。
 
-### Call-graph collapse
+### 调用图坍缩
 
-Before: a tree of function calls rendered as nested boxes. After: collapsed into one box, with internal calls shown faded inside.
+前：一棵函数调用树，渲染成嵌套的方框。后：坍缩成一个方框，内部调用以淡化的样式显示在里面。
 
-## Style guidance
+## 样式指南
 
-- Lean editorial, not corporate-dashboard. Generous whitespace.
-- Colour sparingely: one accent (emerald or indigo) plus red for leakage and amber for warnings.
-- Keep diagrams ~320px tall so before/after sits comfortably side by side.
-- Use `text-xs uppercase tracking-wider` for module labels inside diagrams.
-- The only scripts are Tailwind CDN and Mermaid ESM import. No app code, no interactivity.
+- 走编排排版风，而非企业仪表盘风。留白慷慨。
+- 用色克制：一种强调色（翠绿或靛蓝），加上表示泄漏的红色和表示警告的琥珀色。
+- 让图表高度约 320px，好让前/后对比舒适地并排放置。
+- 图表内部的模块标签用 `text-xs uppercase tracking-wider`。
+- 唯一的脚本是 Tailwind CDN 和 Mermaid ESM import。没有应用代码，没有交互性。
 
-## Top recommendation section
+## 首推（Top recommendation）小节
 
-One larger card. Candidate name, one sentence on why, anchor link to its card.
+一张更大的卡片。候选项名称、一句话说明理由，以及指向其卡片的锚点链接。
 
-## Tone
+## 语气
 
-**Use exactly:** module, interface, implementation, depth, deep, shallow, seam, adapter, leverage, locality.
+**只用这些词：** module、interface、implementation、depth、deep、shallow、seam、adapter、leverage、locality。
 
-**Never substitute:** component, service, unit · API, signature · boundary · layer, wrapper.
+**绝不替换成：** component、service、unit · API、signature · boundary · layer、wrapper。
 
-**Phrasings that fit:**
+**契合的措辞：**
 - "Order intake module is shallow — interface nearly matches the implementation."
 - "Pricing leaks across the seam."
 - "Deepen: one interface, one place to test."
 - "Two adapters justify the seam: HTTP in prod, in-memory in tests."
 
-**Wins bullets** name the gain in glossary terms: *"locality: bugs concentrate in one module"*, *"leverage: one interface, N call sites"*.
+**收益要点** 用词汇表里的术语来点明所得：*"locality: bugs concentrate in one module"*、*"leverage: one interface, N call sites"*。

@@ -1,12 +1,12 @@
 ---
 name: grilling
-description: Grill the user relentlessly about a plan, decision, or idea. Use when the user wants to stress-test their thinking, or uses any 'grill' trigger phrases.
+description: 就一份计划、决策或想法对用户刨根问底地追问。当用户想要对自己的思路进行压力测试，或使用了任何 'grill' 触发短语时使用。
 ---
 
-Interview me relentlessly about every aspect of this until we reach a shared understanding. Walk down each branch of the decision tree, resolving dependencies between decisions one-by-one. For each question, provide your recommended answer.
+就此事的每一个方面对我刨根问底地访谈，直到我们达成共识。沿着决策树的每一个分支走下去，逐一解决各决策之间的依赖关系。对于每个问题，都给出你推荐的答案。
 
-Ask the questions one at a time, waiting for feedback on each question before continuing. Asking multiple questions at once is bewildering.
+一次只问一个问题，在得到每个问题的反馈之前不要继续。一次抛出多个问题会让人无所适从。
 
-If a *fact* can be found by exploring the environment (filesystem, tools, etc.), look it up rather than asking me. The *decisions*, though, are mine — put each one to me and wait for my answer.
+如果某个 *事实* 可以通过探索环境（文件系统、工具等）来获得，就去查它，而不要来问我。但那些 *决策* 是我的——把每一个都摆到我面前，然后等我回答。
 
-Do not act on it until I confirm we have reached a shared understanding.
+在我确认我们已达成共识之前，不要据此采取行动。

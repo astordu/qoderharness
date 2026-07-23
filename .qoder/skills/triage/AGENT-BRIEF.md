@@ -1,42 +1,42 @@
-# Writing Agent Briefs
+# 撰写 Agent 简报
 
-An agent brief is a structured comment posted on a GitHub issue or PR when it moves to `ready-for-agent`. It is the authoritative specification that an AFK agent will work from. The original body and discussion are context — the agent brief is the contract.
+一份 agent 简报（agent brief）是一条结构化的评论，在一个 GitHub issue 或 PR 移到 `ready-for-agent` 时发布在它上面。它是一个离线（AFK）agent 将据以工作的权威规格说明。原始正文和讨论是上下文——agent 简报才是合约。
 
-The brief states **what the agent should do**, which stretches to both surfaces: for an issue, that's building the change from nothing; for a PR, it's what's left to do *to the existing diff* — finish it, close gaps, address review points. Same principles either way; the PR example below shows the difference.
+简报陈述 **agent 应该做什么**，这延伸到两种界面：对一个 issue，那是从零开始构建改动；对一个 PR，那是 *对现有 diff* 还剩什么要做——把它完成、补上缺口、处理评审意见。两种情况原则相同；下面的 PR 示例展示了差异。
 
-## Principles
+## 原则
 
-### Durability over precision
+### 耐用性优先于精确性
 
-The issue may sit in `ready-for-agent` for days or weeks. The codebase will change in the meantime. Write the brief so it stays useful even as files are renamed, moved, or refactored.
+issue 可能会在 `ready-for-agent` 里待上数天或数周。其间代码库会变。把简报写得即便文件被重命名、移动或重构，它仍然有用。
 
-- **Do** describe interfaces, types, and behavioral contracts
-- **Do** name specific types, function signatures, or config shapes that the agent should look for or modify
-- **Don't** reference file paths — they go stale
-- **Don't** reference line numbers
-- **Don't** assume the current implementation structure will remain the same
+- **要** 描述接口、类型和行为合约
+- **要** 点名 agent 应查找或修改的具体类型、函数签名或配置形状
+- **不要** 引用文件路径——它们会过时
+- **不要** 引用行号
+- **不要** 假设当前的实现结构会保持不变
 
-### Behavioral, not procedural
+### 面向行为，而非面向过程
 
-Describe **what** the system should do, not **how** to implement it. The agent will explore the codebase fresh and make its own implementation decisions.
+描述系统 **应该做什么**，而不是 **如何** 实现它。agent 会重新探索代码库，并做出自己的实现决策。
 
-- **Good:** "The `SkillConfig` type should accept an optional `schedule` field of type `CronExpression`"
-- **Bad:** "Open src/types/skill.ts and add a schedule field on line 42"
-- **Good:** "When a user runs `/triage` with no arguments, they should see a summary of issues needing attention"
-- **Bad:** "Add a switch statement in the main handler function"
+- **好：** "`SkillConfig` 类型应接受一个可选的 `schedule` 字段，类型为 `CronExpression`"
+- **差：** "打开 src/types/skill.ts，在第 42 行加一个 schedule 字段"
+- **好：** "当用户不带参数运行 `/triage` 时，他们应看到一份需要关注的 issue 摘要"
+- **差：** "在主处理函数里加一个 switch 语句"
 
-### Complete acceptance criteria
+### 完整的验收标准
 
-The agent needs to know when it's done. Every agent brief must have concrete, testable acceptance criteria. Each criterion should be independently verifiable.
+agent 需要知道什么时候算完成。每一份 agent 简报都必须有具体的、可测试的验收标准。每一条标准都应可独立验证。
 
-- **Good:** "Running `gh issue list --label needs-triage` returns issues that have been through initial classification"
-- **Bad:** "Triage should work correctly"
+- **好：** "运行 `gh issue list --label needs-triage` 会返回那些经过初步分类的 issue"
+- **差：** "分诊应正常工作"
 
-### Explicit scope boundaries
+### 明确的范围边界
 
-State what is out of scope. This prevents the agent from gold-plating or making assumptions about adjacent features.
+陈述什么在范围之外。这能防止 agent 镀金（gold-plating）或对相邻功能做出假设。
 
-## Template
+## 模板
 
 ```markdown
 ## Agent Brief
