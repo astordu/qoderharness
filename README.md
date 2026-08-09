@@ -37,6 +37,7 @@
 | `tdd` | 测试驱动开发 |
 | `code-review` | 从规范与需求两维度审查改动 |
 | `grilling` / `grill-me` / `grill-with-docs` | 对计划或设计刨根问底 |
+| `grill-for-pm` | 面向不懂技术但熟悉业务的产品经理进行刨根问底访谈 |
 | `ce-compound-lite` | 轻量级复利工程，将成果沉淀为方案文档 |
 | `agents-md-refactor` / `agents-md-slim` | 重构或精简 AGENTS.md |
 | `handoff` | 压缩对话为交接文档 |
