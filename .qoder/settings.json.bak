@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".qoder/hooks/pre-push-check.sh",
+            "timeout": 120
+          }
+        ]
+      }
+    ]
+  }
+}

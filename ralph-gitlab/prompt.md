@@ -1,6 +1,10 @@
+# 首先
+
+更新最新代码 git pull
+
 # 输入
 
-GitHub issues 在上下文开头提供，包含所有 open issues 的正文和评论。
+GitLab issues 在上下文开头提供，包含所有 open issues 的正文和评论。
 
 同时传入了最近几次 git commits，请查看以了解已完成的工作。
 
@@ -21,7 +25,7 @@ GitHub issues 在上下文开头提供，包含所有 open issues 的正文和�
 - 遵守**阻塞关系**：如果某个 issue 标注了 "Blocked by #X" 且 #X 仍然 open，则跳过它。
 - 如果有多个未阻塞的 `ready-for-agent` issues，选优先级最高的。
 
-如果没有更多 `ready-for-agent` 任务需要完成，输出 <promise>NO MORE TASKS</promise>。
+如果当前没有未阻塞的 `ready-for-agent` 任务，明确说明阻塞状态；是否结束循环由外层脚本根据 GitLab Issues 的实时状态决定。
 
 # 探索
 
@@ -35,18 +39,16 @@ GitHub issues 在上下文开头提供，包含所有 open issues 的正文和�
 
 # 反馈循环
 
-提交之前，运行以下反馈循环：
+执行 `git push` 时，Git pre-push hook 会再次运行相同验证。如果 push 因验证失败而被阻止：
 
-- `cd back && uv run pytest` 运行后端测试
-- `cd back && uv run ruff check .` 检查后端代码规范
-- `cd front && npx tsc -b` 运行前端类型检查
-- `cd front && npm run lint` 检查前端代码规范
+1. 阅读 hook 输出的完整失败原因。
+2. 定位并修复失败。
 
-修复所有失败后再提交。
+禁止使用 `--no-verify` 绕过验证。
 
 # 提交
 
-做一个 git commit。commit message 必须包含：
+做一个 git commit。commit message 必须包含 (要用中文写commit)：
 
 1. 做出的关键决策
 2. 修改的文件
@@ -55,12 +57,12 @@ GitHub issues 在上下文开头提供，包含所有 open issues 的正文和�
 
 # 提交后
 
-- 如果任务**完全完成**：使用 `gh issue close <number>` 关闭该 GitHub issue
-- 如果任务**部分完成**：使用 `gh issue comment <number> --body "..."` 在 issue 上留评论，说明已完成的工作和剩余部分
+- 如果任务**完全完成**：先用 `glab issue note <number> --message "..."` 写上完成说明和 code review 结果，再用 `glab issue close <number>` 关闭该 GitLab issue
+- 如果任务**部分完成**：先用 `glab issue note <number> --message "..."` 在 issue 上留评论，说明已完成的工作和剩余部分以及 code review 结果
 
-push所有代码到远程仓库
+push所有代码到远程仓库。
 
 # 最终规则
 
 - **只做当前一个任务**。
-- 如果所有 `ready-for-agent` 任务都已完成，输出 <promise>NO MORE TASKS</promise>。
+- 不要自行判断或声明整个 Ralph 循环已经完成；GitLab Issues 是任务状态的事实来源。

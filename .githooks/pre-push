@@ -1,0 +1,20 @@
+#!/bin/sh
+set -eu  # -e：任何一条命令失败，脚本立即退出（退出码非 0）
+
+ROOT_DIR=$(cd "$(dirname "$0")/.." && pwd)
+
+echo "Running pre-push verification..."
+
+echo "==> Backend: ruff check"
+(cd "$ROOT_DIR/back" && uv run ruff check .)
+
+echo "==> Backend: pytest (coverage >= 90%)"
+(cd "$ROOT_DIR/back" && uv run pytest --cov=app --cov-report=term-missing --cov-fail-under=90)
+
+echo "==> Frontend: lint"
+(cd "$ROOT_DIR/front" && npm run lint)
+
+echo "==> Frontend: build"
+(cd "$ROOT_DIR/front" && npm run build)
+
+echo "Pre-push verification passed."

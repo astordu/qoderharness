@@ -32,14 +32,3 @@ GitHub 在 issue 和 PR 之间共享同一个编号空间，所以裸写的 `#42
 ## 当某个技能说"获取相关工单"
 
 运行 `gh issue view <number> --comments`。
-
-## 寻路（Wayfinding）操作
-
-由 `/wayfinder` 使用。**地图（map）** 是单个 issue，其 **子（child）** issue 作为工单。
-
-- **Map**：一个打了 `wayfinder:map` 标签的单个 issue，承载 Notes / Decisions-so-far / Fog 正文。`gh issue create --label wayfinder:map`。
-- **Child ticket**：一个作为 GitHub 子 issue 链接到地图的 issue（在 sub-issues 端点上用 `gh api`）。在未启用 sub-issues 的地方，把该子项加入地图正文里的任务列表，并在子项正文顶部写 `Part of <map>`。标签：`wayfinder:<type>`（`research`/`prototype`/`grilling`/`task`）。一旦被认领，工单就分派给推进它的开发者。
-- **Blocking**：GitHub 的 **原生 issue 依赖**——规范的、UI 可见的表示。用 `gh api --method POST repos/<owner>/<repo>/issues/<child>/dependencies/blocked_by -F issue_id=<blocker-db-id>` 添加一条边，其中 `<blocker-db-id>` 是阻塞方的数字 **数据库 id**（`gh api repos/<owner>/<repo>/issues/<n> --jq .id`，_不是_ 那个 `#number`）。当一个工单所被阻塞的每个 issue 都已关闭时，它即解除阻塞。
-- **Frontier**：扫描地图的子 issue，找出那些开放、未阻塞且未分派的；编号最小者优先。
-- **Claim**：在任何工作之前，把该 issue 分派给推进它的开发者。
-- **Resolve**：把答案作为评论发布，关闭该 issue，然后把一个上下文指针（要点 + 链接）追加到地图的 Decisions-so-far。
