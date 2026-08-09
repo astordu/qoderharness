@@ -61,11 +61,17 @@
 
 ## 快速使用
 
-将本仓库的 `.qoder` 和 `ralph-*` 复制到你的项目：
+将本仓库的 `.qoder` 和 `ralph` 复制到你的项目（根据你使用的平台选择 GitHub 或 GitLab 版本）：
 
 ```bash
+# GitHub 版
 git clone --depth=1 https://github.com/astordu/qoderharness /tmp/qh \
-  && cp -R /tmp/qh/.qoder /tmp/qh/ralph-github /tmp/qh/ralph-gitlab . \
+  && cp -R /tmp/qh/.qoder . && cp -R /tmp/qh/ralph-github ./ralph \
+  && rm -rf /tmp/qh
+
+# GitLab 版
+git clone --depth=1 https://github.com/astordu/qoderharness /tmp/qh \
+  && cp -R /tmp/qh/.qoder . && cp -R /tmp/qh/ralph-gitlab ./ralph \
   && rm -rf /tmp/qh
 ```
 
