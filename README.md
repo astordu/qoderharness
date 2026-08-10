@@ -40,6 +40,7 @@
 | `grill-for-pm` | 面向不懂技术但熟悉业务的产品经理进行刨根问底访谈 |
 | `ce-compound-lite` | 轻量级复利工程，将成果沉淀为方案文档 |
 | `agents-md-refactor` / `agents-md-slim` | 重构或精简 AGENTS.md |
+| `git-commit` | 分析暂存区变更，生成 Conventional Commits 规范提交 |
 | `handoff` | 压缩对话为交接文档 |
 
 ## Ralph 自动编程循环
