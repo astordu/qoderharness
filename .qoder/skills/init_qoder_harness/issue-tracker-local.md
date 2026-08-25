@@ -1,0 +1,19 @@
+# Issue tracker：本地 Markdown
+
+本仓库的 issue 和规格（你可能把规格称作 PRD）以 markdown 文件的形式存放在 `.scratch/` 中。
+
+## 约定
+
+- 每个功能一个目录：`.scratch/<feature-slug>/`
+- 规格是 `.scratch/<feature-slug>/spec.md`
+- 实现 issue 每个工单一个文件，位于 `.scratch/<feature-slug>/issues/<NN>-<slug>.md`，从 `01` 起编号——绝不用一个合并的大工单文件
+- 分诊状态记录为每个 issue 文件顶部附近的一行 `Status:`（角色字符串见 `triage-labels.md`）
+- 评论和对话历史追加到文件底部的 `## Comments` 标题之下
+
+## 当某个技能说"发布到 issue tracker"
+
+在 `.scratch/<feature-slug>/` 下新建一个文件（如有需要就创建该目录）。
+
+## 当某个技能说"获取相关工单"
+
+读取所引用路径处的文件。用户通常会直接传入路径或 issue 编号。
