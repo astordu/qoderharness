@@ -24,7 +24,7 @@
 
 | 技能 | 说明 |
 | --- | --- |
-| `setup-matt-pocock-skills` | 配置 issue tracker、分诊标签与领域文档。**首次使用前运行。** |
+| `init_qoder_harness` | 配置 issue tracker 和分诊标签词汇。**首次使用前运行。** |
 | `domain-modeling` | 构建领域模型与统一语言 |
 | `codebase-design` | 设计深模块术语体系与接缝 |
 | `improve-codebase-architecture` | 扫描代码库寻找加深机会 |
@@ -42,6 +42,11 @@
 | `agents-md-refactor` / `agents-md-slim` | 重构或精简 AGENTS.md |
 | `git-commit` | 分析暂存区变更，生成 Conventional Commits 规范提交 |
 | `handoff` | 压缩对话为交接文档 |
+| `test1-prd-intent-extractor` | 从 PRD 中提取需求意图、用户故事来源与业务风险 |
+| `test2-acceptance-criteria-builder` | 将需求意图转换为 Given/When/Then 验收条件 |
+| `test3-test-matrix-builder` | 基于 PRD 与验收条件生成功能级测试矩阵 CSV |
+| `test4-validation-scope-selector` | 从测试矩阵中筛选最小可信验证集 |
+| `test5-implementation-coverage-reviewer` | 对照测试矩阵审查实现缺口与覆盖情况 |
 
 ## Ralph 自动编程循环
 
