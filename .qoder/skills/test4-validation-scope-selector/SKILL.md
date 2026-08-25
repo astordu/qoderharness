@@ -1,6 +1,6 @@
 ---
 name: test4-validation-scope-selector
-description: 从功能级测试矩阵 CSV 中选择本轮最小可信验证集，更新 selected_for_validation、ci_stage 和 action。适用于 test3-test-matrix-builder 之后；当用户要求“筛选要测哪些”“挑 P0/P1”“哪些进 CI”“最小可信测试集”时使用。
+description: 从功能级测试矩阵 CSV 中选择本轮最小可信验证集，更新 selected_for_validation 和 action。适用于 test3-test-matrix-builder 之后；当用户要求“筛选要测哪些”“挑 P0/P1”“哪些进 CI”“最小可信测试集”时使用。
 ---
 
 # 验证范围选择
@@ -24,7 +24,6 @@ description: 从功能级测试矩阵 CSV 中选择本轮最小可信验证集�
 主要更新字段：
 
 - `selected_for_validation`
-- `ci_stage`
 - `action`
 - `notes`
 
@@ -39,14 +38,6 @@ description: 从功能级测试矩阵 CSV 中选择本轮最小可信验证集�
 5. P2 或低风险 UI 交互默认延后。
 6. 范围外项不进入验证，保留 `selected_for_validation=N`。
 
-## ci_stage 建议
-
-- `commit`：快、稳定、适合每次提交跑。通常是 Service 或少量 API。
-- `pre_merge`：合并前必须跑。通常是 API 集成和关键路径。
-- `release`：发布前跑。通常是少量 E2E、关键回归。
-- `manual`：只能人工确认或不值得自动化。
-- `later`：后续模块或后续迭代再做。
-
 ## action 建议
 
 - `generate_test`：本轮要生成测试。
@@ -59,7 +50,7 @@ description: 从功能级测试矩阵 CSV 中选择本轮最小可信验证集�
 - 不要删除矩阵行，只更新标记列。
 - 不要因为测试多就删掉 PRD 要求；通过 `selected_for_validation=N` 控制本轮范围。
 - 如果用户指定测试层级优先级，例如“只做 Service 和 API”，按用户要求筛选。
-- 如果测试点已明显适合 E2E 但成本高，保留但标记为 `later` 或 `release`。
+- 如果测试点已明显适合 E2E 但成本高，保留但标记 `action=defer`。
 
 ## 下一步
 

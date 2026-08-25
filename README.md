@@ -34,6 +34,8 @@
 | `to-tickets` | 拆解计划为曳光弹式工单 |
 | `triage` | issue / PR 分诊状态机 |
 | `implement` | 基于规格或工单实现工作 |
+| `implement-with-test-matrix` | 基于 PRD 实现工作，结合测试矩阵驱动验证 |
+| `test-matrix-rules` | 测试矩阵 CSV 字段定义与取值规范（供其他技能引用） |
 | `tdd` | 测试驱动开发 |
 | `code-review` | 从规范与需求两维度审查改动 |
 | `grilling` / `grill-me` / `grill-with-docs` | 对计划或设计刨根问底 |
