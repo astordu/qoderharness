@@ -40,7 +40,7 @@
 | `tdd` | 测试驱动开发 |
 | `code-review` | 从规范与需求两维度审查改动 |
 | `grilling` / `grill-me` / `grill-with-docs` | 对计划或设计刨根问底 |
-| `grill-for-pm` | 面向不懂技术但熟悉业务的 PM 进行刨根问底访谈，页面内容用 ASCII 展现 |
+| `grill-for-pm` | 面向不懂技术但熟悉业务的 PM 进行刨根问底访谈，收集需求后交给研发开发；页面内容用 ASCII 展现 |
 | `ce-compound-lite` | 轻量级复利工程，将成果沉淀为方案文档 |
 | `agents-md-refactor` / `agents-md-slim` | 重构或精简 AGENTS.md |
 | `git-commit` | 分析暂存区变更，生成 Conventional Commits 规范提交 |
