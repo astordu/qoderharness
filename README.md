@@ -45,7 +45,7 @@
 | `agents-md-refactor` / `agents-md-slim` | 重构或精简 AGENTS.md |
 | `git-commit` | 分析暂存区变更，生成 Conventional Commits 规范提交 |
 | `handoff` | 压缩对话为交接文档 |
-| `ascii-pattern` | ASCII 图案库（框图、流程图、目录树、进度条等） |
+| `ascii-pattern` | ASCII 图案库（方框图、流程图、文件树、进度条、制表符等，全中文） |
 | `test1-prd-intent-extractor` | 从 PRD 中提取需求意图、用户故事来源与业务风险 |
 | `test2-acceptance-criteria-builder` | 将需求意图转换为 Given/When/Then 验收条件 |
 | `test3-test-matrix-builder` | 基于 PRD 与验收条件生成功能级测试矩阵 CSV |

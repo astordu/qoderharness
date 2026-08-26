@@ -10,7 +10,7 @@ description: 从两个维度审查自某个固定基点（提交、分支、标�
 
 两个维度都作为**并行子代理**运行，以免相互污染各自的上下文，随后由本技能汇总它们的发现。
 
-issue 追踪器应当已提供给你 —— 如果 `docs/agents/issue-tracker.md` 缺失，请运行 `/setup-matt-pocock-skills`。
+issue 追踪器应当已提供给你 —— 如果 `docs/agents/issue-tracker.md` 缺失，请运行 `/init_goder_harness`。
 
 ## 流程
 

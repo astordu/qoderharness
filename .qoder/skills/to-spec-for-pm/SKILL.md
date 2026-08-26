@@ -8,7 +8,7 @@ disable-model-invocation: true
 
 不要访谈用户——只综合你在对话中已经确认过的需求。
 
-issue tracker 与分诊（triage）标签词汇应当已经提供给你——如果没有，运行 `/setup-matt-pocock-skills`。
+issue tracker 与分诊（triage）标签词汇应当已经提供给你——如果没有，运行 `/init_goder_harness`。
 
 ## 流程
 
@@ -16,7 +16,7 @@ issue tracker 与分诊（triage）标签词汇应当已经提供给你——如
 
 2. **探索现有系统**：了解当前系统中相关功能的现状，以便在文档中清楚地说明「现在是什么样」和「要变成什么样」。
 
-3. 用下面的模板编写规格文档，然后把它发布到项目的 issue tracker。打上 `ready-for-coder` 分诊标签。同时打上一个 `spec` 标签。
+3. 用下面的模板编写规格文档，然后把它发布到项目的 issue tracker。打上 `spec-for-pm` 分诊标签。
 
 <spec-template>
 

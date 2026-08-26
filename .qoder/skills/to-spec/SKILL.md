@@ -6,7 +6,7 @@ disable-model-invocation: true
 
 这个技能获取当前对话上下文以及对代码库的理解，产出一份规格（你可能把这类文档称为 PRD）。不要访谈用户——只综合你已经知道的东西。
 
-issue tracker 与分诊（triage）标签词汇应当已经提供给你——如果没有，运行 `/setup-matt-pocock-skills`。
+issue tracker 与分诊（triage）标签词汇应当已经提供给你——如果没有，运行 `/init_goder_harness`。
 
 ## 流程
 

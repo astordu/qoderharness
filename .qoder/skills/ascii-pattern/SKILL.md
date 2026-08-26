@@ -1,92 +1,92 @@
-# Pattern Library
+# ASCII 图案库
 
-## Box Diagrams
+## 方框图
 
 ```
 ┌─────────────────┐
-│  Component A    │
-│  (Description)  │
+│  组件 A         │
+│  (描述)         │
 └────────┬────────┘
          │
          ▼
 ┌─────────────────┐
-│  Component B    │
+│  组件 B         │
 └─────────────────┘
 ```
 
-## File Trees
+## 文件树
 
 ```
 test-orchestration-demo/
 ├── .claude/
-│   ├── skills/           ⭐ This skill!
+│   ├── skills/           ⭐ 当前技能!
 │   └── instructions/
 ├── Docs/
 │   └── results-implementation/
-└── frontend/             ✨ 7-folder architecture
-    ├── app/              (Next.js routes)
-    ├── modules/          (Feature modules)
-    ├── shared/           (UI components)
-    ├── lib/              (Integrations)
-    ├── store/            (Global state)
-    ├── styles/           (Design system)
-    └── types/            (TypeScript)
+└── frontend/             ✨ 7 目录架构
+    ├── app/              (Next.js 路由)
+    ├── modules/          (功能模块)
+    ├── shared/           (UI 组件)
+    ├── lib/              (集成层)
+    ├── store/            (全局状态)
+    ├── styles/           (设计系统)
+    └── types/            (TypeScript 类型)
 ```
 
-## Flow Charts
+## 流程图
 
 ```
-User Answer
+用户回答
      │
      ▼
-tRPC Endpoint
+tRPC 接口
      │
      ▼
-Claude AI → Evaluation
+Claude AI → 评估
      │
      ▼
-Results Store → UI
+结果存储 → UI
 ```
 
-## Comparison Tables
+## 对比表
 
 ```
 ┌──────────────────────────────────────────┐
-│    BEFORE (17 folders)  AFTER (7 folders)│
+│    改造前 (17 个目录)    改造后 (7 个目录)│
 ├──────────────────────────────────────────┤
-│  Complexity: High      Simple     -60% ⬇️│
-│  Type Safety: 70%      100%       +30% ✅│
-│  Code Lines: 3,455     2,500     -955 🧹│
-│  Build Time: 8.5s      7.2s      -15% ⚡│
+│  复杂度:    高             低      -60% ⬇️│
+│  类型安全:  70%            100%    +30% ✅│
+│  代码行数:  3,455          2,500   -955 🧹│
+│  构建时间:  8.5s           7.2s    -15% ⚡│
 └──────────────────────────────────────────┘
 ```
 
-## Progress Bars
+## 进度条
 
 ```
-DevPrep AI - Results Analytics
+DevPrep AI - 结果分析
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Tab 1: Overview      ████████████████ 100% ✅
-Tab 2: Questions     ████████████████ 100% ✅
-Tab 3: Hint Analytics████████████████ 100% ✅
-Tab 4: Insights      ████████████████ 100% ✅
+标签页 1: 概览     ████████████████ 100% ✅
+标签页 2: 题目     ████████████████ 100% ✅
+标签页 3: 提示分析 ████████████████ 100% ✅
+标签页 4: 洞察     ████████████████ 100% ✅
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
-## Box-Drawing Characters
+## 制表符参考
 
 ```
-┌─┬─┐  ╔═╦═╗  Basic boxes
-├─┼─┤  ╠═╬═╣  Heavy boxes
-└─┴─┘  ╚═╩═╝  Rounded corners
+┌─┬─┐  ╔═╦═╗  基础方框
+├─┼─┤  ╠═╬═╣  加粗方框
+└─┴─┘  ╚═╩═╝  圆角方框
 
-│ ║    Vertical lines
-─ ═    Horizontal lines
+│ ║    竖线
+─ ═    横线
 
-▲ ▼    Arrows
-► ◄    Arrows horizontal
+▲ ▼    上下箭头
+► ◄    左右箭头
 
-✅ ❌  Status indicators
-🚧 📋  Progress states
-⭐ 🔥  Priorities
+✅ ❌  状态指示
+🚧 📋  进度状态
+⭐ 🔥  优先级标记
 ```

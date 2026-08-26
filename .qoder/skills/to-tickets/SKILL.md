@@ -8,7 +8,7 @@ disable-model-invocation: true
 
 把一份计划、规格或对话拆解成一组 **工单**——曳光弹式的纵向切片，每个都声明 **阻塞（block）** 它的那些工单。
 
-issue tracker 与分诊（triage）标签词汇应当已经提供给你——如果没有，运行 `/setup-matt-pocock-skills`。
+issue tracker 与分诊（triage）标签词汇应当已经提供给你——如果没有，运行 `/init_goder_harness`。
 
 ## 流程
 
@@ -55,7 +55,7 @@ issue tracker 与分诊（triage）标签词汇应当已经提供给你——如
 
 ### 5. 把工单发布到已配置的 tracker
 
-发布已认可的工单。**怎么发布？** 取决于 `/setup-matt-pocock-skills` 配置的 tracker——工单本身两种情况下都一样，只有阻塞边的形态不同：
+发布已认可的工单。**怎么发布？** 取决于 `/init_goder_harness` 配置的 tracker——工单本身两种情况下都一样，只有阻塞边的形态不同：
 
 - **本地文件**——在 `.scratch/<feature-slug>/issues/<NN>-<slug>.md` 下每个工单写一个文件，从 `01` 起按依赖顺序编号（阻塞项在前）。每个文件的 "Blocked by" 列出它所依赖的编号/标题。使用下面的每工单文件模板——一个工单一个文件，绝不用一个合并的大文件。
 - **真实的 issue tracker（GitHub、Linear 等）**——按依赖顺序（阻塞项在前）每个工单发布一个 issue，好让每个工单的阻塞边能引用真实的标识符。用平台原生的阻塞 / 子 issue 关系（如果它有的话）；否则把每个工单的 "Blocked by" 设为那些阻塞的 issue。除非另有指示，否则打上 `ready-for-agent` 分诊标签——这些工单按构造就是可被 agent 领取的。

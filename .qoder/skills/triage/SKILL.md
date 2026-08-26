@@ -6,9 +6,9 @@ disable-model-invocation: true
 
 # 分诊（Triage）
 
-让项目 issue tracker 上的 issue 走过一个由分诊角色构成的小型状态机。
+分诊的核心职责是驱动 issue tracker 上的每个 issue 流经一个小型状态机——由多个分诊角色依次完成分类、验证与流转。
 
-如果本仓库把外部 pull request 也当作一个请求来源（见 issue-tracker 配置），分诊也覆盖它们：**一个 PR 就是一个附带了代码的 issue**——相同的角色、相同的状态、相同的状态机，只有少数几处标注了"对 PR 而言"的差异（见下文）。按 tracker 配置把一个裸的 `#42` 解析为 issue 还是 PR。
+如果本仓库将外部 pull request 也纳入请求来源（详见 issue-tracker 配置），分诊流程同样适用于 PR。可以把 PR 理解为"附带代码变更的 issue"：它复用相同的角色、状态和状态机，仅在少数环节存在针对 PR 的特殊处理（详见下文）。至于裸编号 `#42` 究竟指向 issue 还是 PR，由 tracker 配置决定。
 
 分诊期间发布到 issue tracker 的每一条评论或 issue **都必须** 以这条免责声明开头：
 
@@ -40,7 +40,7 @@ disable-model-invocation: true
 
 每个经过分诊的 issue 都应恰好带有一个分类角色和一个状态角色。如果状态角色之间相互冲突，就把它标出来，并在做任何其他事情之前询问维护者。
 
-这些是规范角色名——issue tracker 中实际使用的标签字符串可能不同。这个映射应当已经提供给你——如果没有，运行 `/setup-matt-pocock-skills`。
+这些是规范角色名——issue tracker 中实际使用的标签字符串可能不同。这个映射应当已经提供给你——如果没有，运行 `/init_goder_harness`。
 
 状态转换：一个未打标签的 issue 通常先进入 `needs-triage`；从那里它转向 `needs-info`、`ready-for-agent`、`ready-for-human` 或 `wontfix`。一旦报告者回复，`needs-info` 就回到 `needs-triage`。维护者可以随时覆盖——把看起来不寻常的转换标出来，并在继续之前询问。
 
