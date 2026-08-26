@@ -31,6 +31,7 @@
 | `prototype` | 构建用完即弃的原型 |
 | `to-prd` | 将对话上下文转化为 PRD |
 | `to-spec` | 综合对话为规格文档 |
+| `to-spec-for-pm` | 将对话整理为面向 PM 的业务需求规格文档（不含技术细节） |
 | `to-tickets` | 拆解计划为曳光弹式工单 |
 | `triage` | issue / PR 分诊状态机 |
 | `implement` | 基于规格或工单实现工作 |
@@ -39,11 +40,12 @@
 | `tdd` | 测试驱动开发 |
 | `code-review` | 从规范与需求两维度审查改动 |
 | `grilling` / `grill-me` / `grill-with-docs` | 对计划或设计刨根问底 |
-| `grill-for-pm` | 面向不懂技术但熟悉业务的产品经理进行刨根问底访谈 |
+| `grill-for-pm` | 面向不懂技术但熟悉业务的 PM 进行刨根问底访谈，页面内容用 ASCII 展现 |
 | `ce-compound-lite` | 轻量级复利工程，将成果沉淀为方案文档 |
 | `agents-md-refactor` / `agents-md-slim` | 重构或精简 AGENTS.md |
 | `git-commit` | 分析暂存区变更，生成 Conventional Commits 规范提交 |
 | `handoff` | 压缩对话为交接文档 |
+| `ascii-pattern` | ASCII 图案库（框图、流程图、目录树、进度条等） |
 | `test1-prd-intent-extractor` | 从 PRD 中提取需求意图、用户故事来源与业务风险 |
 | `test2-acceptance-criteria-builder` | 将需求意图转换为 Given/When/Then 验收条件 |
 | `test3-test-matrix-builder` | 基于 PRD 与验收条件生成功能级测试矩阵 CSV |

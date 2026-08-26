@@ -5,3 +5,5 @@ disable-model-invocation: true
 ---
 
 运行一次 `/grilling` 会话 , 但这次面向的人员是不懂技术、但熟悉业务的产品经理(PM)
+
+如果有页面内容需要确认, 使用asccii的方式展现.
