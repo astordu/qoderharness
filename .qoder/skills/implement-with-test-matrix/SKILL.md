@@ -11,3 +11,4 @@ disable-model-invocation: true
 使用 `/test-matrix-rules` 读取测试矩阵规则表头说明.
 
 在预先约定好的接缝（seam）处，尽可能使用 /tdd。
+一定要写测试用例, 如果项目中没有, 要进行构建补齐
