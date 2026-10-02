@@ -1,10 +1,6 @@
-# 首先
-
-更新最新代码 git pull
-
 # 输入
 
-GitLab issues 在上下文开头提供，包含所有 open issues 的正文和评论。
+上下文开头提供两份 GitLab issue 数据：分配给当前执行者的 `ready-for-agent` issues 包含正文和评论；所有 open issues 的摘要用于判断阻塞关系。
 
 同时传入了最近几次 git commits，请查看以了解已完成的工作。
 
@@ -35,32 +31,26 @@ GitLab issues 在上下文开头提供，包含所有 open issues 的正文和�
 
 **只做被挑选出来的这一个任务**
 
-你使用 /implement 这个skills来做任务。
-
-# 反馈循环
-
-执行 `git push` 时，Git pre-push hook 会再次运行相同验证。如果 push 因验证失败而被阻止：
-
-1. 阅读 hook 输出的完整失败原因。
-2. 定位并修复失败。
-
-禁止使用 `--no-verify` 绕过验证。
+使用 /implement skill 完成任务。遵循 TDD，并运行与本任务相关的测试。
 
 # 提交
 
-做一个 git commit。commit message 必须包含 (要用中文写commit)：
+实现完成后，只暂存本 Issue 直接相关的文件并做一个 git commit。不要使用 `git add -A` 把无关修改或未跟踪文件带入提交。commit 会触发 pre-commit hook 中的 lint 和 type check；禁止使用 `--no-verify` 绕过验证。
+
+commit message 使用中文，并且必须包含：
 
 1. 做出的关键决策
 2. 修改的文件
-3. 关联的 issue 编号（例如 "Closes #N" 或 "Refs #N"）
+3. 关联的 issue 编号（使用 `Refs #N`）
 4. 阻塞项或给下一轮迭代的备注
 
 # 提交后
 
-- 如果任务**完全完成**：先用 `glab issue note <number> --message "..."` 写上完成说明和 code review 结果，再用 `glab issue close <number>` 关闭该 GitLab issue
-- 如果任务**部分完成**：先用 `glab issue note <number> --message "..."` 在 issue 上留评论，说明已完成的工作和剩余部分以及 code review 结果
-
-push所有代码到远程仓库。
+- 只有 commit 成功后才能关闭 issue。
+- 如果任务**完全完成**：先运行 `glab issue note <number> --message "..."` 写上完成说明、commit SHA 和测试结果，再运行 `glab issue close <number>` 关闭 issue。
+- 如果任务**部分完成**：不要关闭 issue；运行 `glab issue note <number> --message "..."` 说明已完成内容、剩余内容和测试结果。
+- 不执行 Code Review；统一 Code Review 在最终 push 后由 CI 完成。
+- 不执行 `git push`；所有 issue 完成后由外层脚本启动 Push Agent 统一 push。
 
 # 最终规则
 

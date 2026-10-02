@@ -2,4 +2,4 @@
 set -euo pipefail
 
 PROJECT_DIR=$(git rev-parse --show-toplevel)
-exec "$PROJECT_DIR/scripts/check-coverage.sh"
+exec "$PROJECT_DIR/scripts/check-test.sh"

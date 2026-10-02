@@ -1,0 +1,58 @@
+name: Verify and AI Code Review
+
+on:
+  push:
+    branches:
+      - '**'
+
+permissions: {}
+
+concurrency:
+  group: verify-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: Deterministic checks
+    runs-on: [self-hosted, macOS, ARM64]
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Run lint and type-check entry point
+        run: bash scripts/check-test.sh
+
+      - name: Run coverage entry point
+        run: bash scripts/check-coverage.sh
+
+  ai-code-review-fix:
+    name: AI Code Review and fix
+    needs: verify
+    runs-on: [self-hosted, macOS, ARM64]
+    timeout-minutes: 45
+    permissions:
+      contents: write
+      issues: read
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Review and repair the pushed batch
+        shell: bash
+        env:
+          AI_AGENT_ADAPTER: ${{ vars.AI_AGENT_ADAPTER || 'qodercli' }}
+          REVIEW_BASE_SHA: ${{ github.event.before }}
+          GITHUB_DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+          GITHUB_REF_NAME: ${{ github.ref_name }}
+          CODE_HOST_PLATFORM: github
+          GH_TOKEN: ${{ github.token }}
+        run: bash scripts/ci/code-review-fix.sh "$AI_AGENT_ADAPTER"

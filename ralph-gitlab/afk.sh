@@ -1,20 +1,21 @@
-#!/bin/bash
+#!/usr/bin/env bash
 set -eo pipefail
 
 usage() {
   echo "Usage: $0 <qodercli|claude|codex> [max_iterations]" >&2
 }
 
+RALPH_DIR=$(cd "$(dirname "$0")" && pwd -P)
+PROJECT_DIR=$(dirname "$RALPH_DIR")
 ADAPTER=${1:-}
 MAX_ITERATIONS=${2:-10}
+ASSIGNEE=${RALPH_ASSIGNEE:-@me}
+
+cd "$PROJECT_DIR"
 
 case "$ADAPTER" in
-  qodercli|claude|codex)
-    ;;
-  *)
-    usage
-    exit 1
-    ;;
+  qodercli|claude|codex) ;;
+  *) usage; exit 1 ;;
 esac
 
 if ! [[ "$MAX_ITERATIONS" =~ ^[1-9][0-9]*$ ]]; then
@@ -25,83 +26,69 @@ fi
 
 run_agent() {
   local agent_prompt=$1
-
   case "$ADAPTER" in
-    qodercli)
-      qodercli --model Qwen3.8-Max --permission-mode bypassPermissions -p "$agent_prompt"
-      ;;
-    claude)
-      claude --dangerously-skip-permissions -p "$agent_prompt"
-      ;;
-    codex)
-      codex exec --dangerously-bypass-approvals-and-sandbox "$agent_prompt"
-      ;;
+    qodercli) qodercli --model Qwen3.8-Max --permission-mode bypassPermissions -p "$agent_prompt" ;;
+    claude) claude --dangerously-skip-permissions -p "$agent_prompt" ;;
+    codex) codex exec --dangerously-bypass-approvals-and-sandbox "$agent_prompt" ;;
   esac
 }
 
-# 获取单个 issue 的完整详情（含评论）
-fetch_issue_detail() {
-  local iid=$1
-  glab issue view "$iid" -F json -c 2>/dev/null
-}
-
-# 获取带指定标签的 issues 完整详情（含评论）
-fetch_issues_with_label() {
-  local label=$1
+refresh_ready_issues() {
   local iids
-  iids=$(glab issue list --label "$label" -O json --jq '.[].iid' 2>/dev/null || true)
+  iids=$(glab issue list \
+    --assignee "$ASSIGNEE" \
+    --label ready-for-agent \
+    -O json \
+    --jq '.[].iid' \
+    2>/dev/null || true)
+
   if [ -z "$iids" ]; then
-    echo "[]"
+    READY_ISSUES='[]'
     return
   fi
-  local first=true
-  echo "["
-  for iid in $iids; do
-    if [ "$first" = true ]; then first=false; else echo ","; fi
-    fetch_issue_detail "$iid" | jq -c '.'
-  done
-  echo "]"
+
+  READY_ISSUES=$(for iid in $iids; do
+    glab issue view "$iid" -F json -c 2>/dev/null | jq -c '{
+      number: (.iid // .id),
+      title,
+      body: (.description // ""),
+      labels: (.labels // []),
+      comments: [(.notes // [])[]? | (.body // "")]
+    }'
+  done | jq -s '.' || echo '[]')
 }
 
-# 获取所有 open issues 的摘要
-fetch_open_issue_summaries() {
-  glab issue list -O json --jq '[.[] | {iid, title, labels}]' 2>/dev/null || echo "[]"
+list_open_issues() {
+  glab issue list \
+    -O json \
+    --jq '[.[] | {number: .iid, title, labels}]' \
+    2>/dev/null || echo '[]'
 }
 
-refresh_ready_issues() {
-  if ! READY_ISSUES=$(fetch_issues_with_label "ready-for-agent"); then
-    echo "Ralph 无法读取 ready-for-agent issues，停止运行。" >&2
-    return 1
-  fi
+run_push_agent() {
+  local push_prompt
+  push_prompt=$(cat "$RALPH_DIR/push-prompt.md")
+  run_agent "GitLab ready-for-agent issue 列表为空。现在执行最终统一 push。
+
+$push_prompt"
 }
 
 for ((i=1; i<=MAX_ITERATIONS; i++)); do
-  echo "=== Ralph iteration $i/$MAX_ITERATIONS ($ADAPTER) ==="
+  echo "=== Ralph GitLab iteration $i/$MAX_ITERATIONS ($ADAPTER) ==="
 
-  # 获取最近 commits 作为上下文
   commits=$(git log -n 5 --format="%H%n%ad%n%B---" --date=short 2>/dev/null || echo "No commits found")
-
-  # 从 GitLab 拉取 ready-for-agent 标签的 issues（含正文和评论）
-  if ! refresh_ready_issues; then
-    exit 1
-  fi
+  refresh_ready_issues
   issues=$READY_ISSUES
 
   if [[ "$issues" == "[]" ]]; then
-    echo "Ralph complete after $((i - 1)) iterations."
+    echo "Ralph issues complete after $((i - 1)) iterations. Starting final push agent."
+    run_push_agent
     exit 0
   fi
 
-  # 同时拉取其他 open issues（用于了解阻塞关系和全局状态）
-  if ! all_issues=$(fetch_open_issue_summaries); then
-    echo "Ralph 无法读取 open issues，停止运行。" >&2
-    exit 1
-  fi
+  all_issues=$(list_open_issues)
+  prompt=$(cat "$RALPH_DIR/implements_prompt.md")
 
-  # 加载 prompt
-  prompt=$(cat ralph/prompt.md)
-
-  # 运行 agent
   result=$(run_agent "最近的 commits: $commits
 
 可处理的 Issues (ready-for-agent): $issues
@@ -113,12 +100,10 @@ $prompt")
   echo "$result"
 done
 
-if ! refresh_ready_issues; then
-  exit 1
-fi
-
+refresh_ready_issues
 if [[ "$READY_ISSUES" == "[]" ]]; then
-  echo "Ralph complete after $MAX_ITERATIONS iterations."
+  echo "Ralph issues complete after $MAX_ITERATIONS iterations. Starting final push agent."
+  run_push_agent
   exit 0
 fi
 

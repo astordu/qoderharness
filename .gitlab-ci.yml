@@ -1,0 +1,23 @@
+stages:
+  - verify
+  - code-review
+
+variables:
+  GIT_DEPTH: "0"
+  AI_AGENT_ADAPTER: "qodercli"
+  CODE_HOST_PLATFORM: "gitlab"
+
+verify:
+  stage: verify
+  script:
+    - bash scripts/check-test.sh
+    - bash scripts/check-coverage.sh
+
+ai-code-review-fix:
+  stage: code-review
+  needs:
+    - verify
+  script:
+    - bash scripts/ci/code-review-fix.sh "$AI_AGENT_ADAPTER"
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH'

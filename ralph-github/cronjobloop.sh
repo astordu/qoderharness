@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 RALPH_DIR=$(cd "$(dirname "$0")" && pwd -P)
 PROJECT_DIR=$(dirname "$RALPH_DIR")

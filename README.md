@@ -11,9 +11,12 @@
 ├── .qoder/
 │   ├── skills/         # 工程技能（斜杠命令调用）
 │   ├── agents/         # 自定义 subagent（代码审查、方案提取等）
-│   └── hooks/          # Qoder 钩子（pre-push 检查）
-├── .githooks/          # Git 钩子（pre-push）
-├── .github/workflows/  # GitHub Actions（issue 自动处理）
+│   ├── prompts/        # CI Code Review / 修复提示词
+│   └── hooks/          # Qoder 钩子兼容层
+├── .githooks/          # Git pre-commit / pre-push hooks
+├── .github/workflows/  # GitHub Actions
+├── .gitlab-ci.yml      # GitLab CI
+├── scripts/            # 平台适配、质量检查和 CI Shell
 ├── ralph-github/       # Ralph 循环 — GitHub 版
 └── ralph-gitlab/       # Ralph 循环 — GitLab 版
 ```
@@ -54,39 +57,92 @@
 
 ## Ralph 自动编程循环
 
-从 issue 队列中按优先级挑选 `ready-for-agent` 任务，交给 Qoder CLI 实现、测试、提交，循环执行。提供 **GitHub** 和 **GitLab** 两个版本。
+从分配给当前执行者的 issue 队列中按优先级挑选 `ready-for-agent` 任务，交给 Agent 实现、测试、提交并关闭。每个 issue 只 commit、不 push；列表为空后启动第二个 Push Agent，统一执行 push。GitHub 入口直接使用 `gh`，GitLab 入口直接使用 `glab`。
 
 ```bash
 # 单次运行
-./ralph-github/once.sh        # GitHub 版
-./ralph-gitlab/once.sh        # GitLab 版
+./ralph-github/once.sh qodercli
+./ralph-gitlab/once.sh qodercli
 
 # 多轮循环（默认最多 10 轮）
-./ralph-github/afk.sh 20      # 最多 20 轮
+./ralph-github/afk.sh qodercli 20
+./ralph-gitlab/afk.sh qodercli 20
 
 # 定时循环
 ./ralph-github/cronjobloop.sh # cron 调度
 ```
 
-任务行为在 `ralph-*/prompt.md` 中定义，可按项目需要调整。
+支持 `qodercli`、`claude`、`codex` 三种适配器。默认查询分配给 `@me` 的任务，可通过 `RALPH_ASSIGNEE=<username>` 覆盖。
+
+任务实现行为在 `ralph-*/implements_prompt.md` 中定义，最终 push 行为在 `ralph-*/push-prompt.md` 中定义。
+
+## Git Hooks 与项目检查
+
+安装仓库级 hooks：
+
+```bash
+./scripts/install-git-hooks.sh
+```
+
+- `pre-commit` 调用 `scripts/check-test.sh`，作为 lint 和 type check 的占位检查点。
+- `pre-push` 调用 `scripts/check-coverage.sh`，作为单元测试与覆盖率的占位检查点。
+
+由于 Qoder Harness 可用于不同技术栈，这两个脚本只保留检查点提示。复制到实际项目后，再按照项目技术栈替换为真实命令：
+
+```text
+scripts/check-test.sh       # lint + type check
+scripts/check-coverage.sh   # unit tests + coverage gate
+```
+
+## CI Code Review
+
+GitHub Actions 和 GitLab CI 都按以下流程运行：
+
+```text
+确定性检查
+    ↓
+以本次 push 之前的 SHA 为 fixed point
+    ↓
+审查 fixed-point...HEAD 的全部 commits
+    ↓
+读取这些 commits 引用的全部 issues（包括已关闭 issue）
+    ↓
+Prompt 内最多三轮 Review → 修复 → 验证 → commit
+    ↓
+Shell 将修复 commits push 回当前分支
+```
+
+- GitHub 入口：`.github/workflows/verify.yml`
+- GitLab 入口：`.gitlab-ci.yml`
+- 公共 Shell：`scripts/ci/code-review-fix.sh`
+- 公共 Prompt：`scripts/ci/code-review-fix_prompt.md`
+
+CI Runner 必须预装并认证选定的 Agent CLI，并具备读取 issues、向当前分支 push 的权限。通过 `AI_AGENT_ADAPTER` 选择 `qodercli`、`claude` 或 `codex`。
 
 ## 快速使用
 
-将本仓库的 `.qoder` 和 `ralph` 复制到你的项目（根据你使用的平台选择 GitHub 或 GitLab 版本）：
+将 `.qoder`、`.githooks`、`scripts` 和对应平台的 Ralph/CI 文件复制到目标项目：
 
 ```bash
 # GitHub 版
 git clone --depth=1 https://github.com/astordu/qoderharness /tmp/qh \
-  && cp -R /tmp/qh/.qoder . && cp -R /tmp/qh/ralph-github ./ralph \
+  && cp -R /tmp/qh/.qoder /tmp/qh/.githooks /tmp/qh/scripts . \
+  && cp -R /tmp/qh/ralph-github ./ralph \
+  && mkdir -p .github/workflows \
+  && cp /tmp/qh/.github/workflows/verify.yml .github/workflows/verify.yml \
+  && ./scripts/install-git-hooks.sh \
   && rm -rf /tmp/qh
 
 # GitLab 版
 git clone --depth=1 https://github.com/astordu/qoderharness /tmp/qh \
-  && cp -R /tmp/qh/.qoder . && cp -R /tmp/qh/ralph-gitlab ./ralph \
+  && cp -R /tmp/qh/.qoder /tmp/qh/.githooks /tmp/qh/scripts . \
+  && cp -R /tmp/qh/ralph-gitlab ./ralph \
+  && cp /tmp/qh/.gitlab-ci.yml .gitlab-ci.yml \
+  && ./scripts/install-git-hooks.sh \
   && rm -rf /tmp/qh
 ```
 
-> ⚠️ 目标项目中若已存在同名目录，`cp -R` 会覆盖，请注意备份。
+> ⚠️ 目标项目中若已存在同名目录或 CI 文件，复制前先合并配置，不要直接覆盖。
 
 ## 致谢
 

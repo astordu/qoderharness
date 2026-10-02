@@ -5,7 +5,7 @@
 ## 约定
 
 - **创建 issue**：`gh issue create --title "..." --body "..."`。多行正文用 heredoc。
-- **读取 issue**：`gh issue view <number> --comments`，用 `jq` 过滤评论并一并获取标签。
+- **读取 issue**：`gh issue view <number> --comments`，用 `jq` 过滤评论并一并获取标签。已关闭 issue 仍然可以读取。
 - **列出 issue**：`gh issue list --state open --json number,title,body,labels,comments --jq '[.[] |{number, title, body, labels: [.labels[].name], comments: [.comments[].body]}]'`，配合合适的 `--label` 和 `--state` 过滤条件。
 - **在 issue 上评论**：`gh issue comment <number> --body "..."`
 - **添加 / 移除标签**：`gh issue edit <number> --add-label "..."` / `--remove-label "..."`
@@ -32,3 +32,5 @@ GitHub 在 issue 和 PR 之间共享同一个编号空间，所以裸写的 `#42
 ## 当某个技能说"获取相关工单"
 
 运行 `gh issue view <number> --comments`。
+
+Code Review 必须读取审查范围内全部 commit message 引用的唯一 issue；多个已关闭 issue 共同构成本次 Spec Review 的需求范围。
