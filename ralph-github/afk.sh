@@ -53,12 +53,35 @@ list_open_issues() {
     2>/dev/null || echo '[]'
 }
 
-run_push_agent() {
-  local push_prompt
-  push_prompt=$(cat "$RALPH_DIR/push-prompt.md")
-  run_agent "GitHub ready-for-agent issue 列表为空。现在执行最终统一 push。
+run_codereview_push_agent() {
+  local issue_base=$1
+  local review_prompt
+  review_prompt=$(cat "$RALPH_DIR/codereview-push.md")
+  run_agent "当前 Issue 实现前的固定基点 ISSUE_BASE：$issue_base
 
-$push_prompt"
+Implement Agent 已完成当前 Issue、创建 commit 并关闭 Issue。现在对本轮本地 commits 执行 Code Review、改进、commit 和 push。
+
+$review_prompt"
+}
+
+verify_pushed_head() {
+  local upstream
+  local head_sha
+  local upstream_sha
+
+  upstream=$(git rev-parse --abbrev-ref --symbolic-full-name '@{upstream}' 2>/dev/null) || {
+    echo "Code Review Agent 完成后当前分支仍没有 upstream，无法确认 push 成功。" >&2
+    return 1
+  }
+  head_sha=$(git rev-parse HEAD)
+  upstream_sha=$(git rev-parse "$upstream")
+
+  if [ "$head_sha" != "$upstream_sha" ]; then
+    echo "Code Review Agent 完成后 HEAD 尚未同步到 $upstream。" >&2
+    echo "HEAD: $head_sha" >&2
+    echo "$upstream: $upstream_sha" >&2
+    return 1
+  fi
 }
 
 for ((i=1; i<=MAX_ITERATIONS; i++)); do
@@ -69,11 +92,11 @@ for ((i=1; i<=MAX_ITERATIONS; i++)); do
   issues=$READY_ISSUES
 
   if [[ "$issues" == "[]" ]]; then
-    echo "Ralph issues complete after $((i - 1)) iterations. Starting final push agent."
-    run_push_agent
+    echo "Ralph issues complete after $((i - 1)) iterations. Every completed issue has been reviewed and pushed."
     exit 0
   fi
 
+  issue_base=$(git rev-parse HEAD)
   all_issues=$(list_open_issues)
   prompt=$(cat "$RALPH_DIR/implements_prompt.md")
 
@@ -86,12 +109,20 @@ for ((i=1; i<=MAX_ITERATIONS; i++)); do
 $prompt")
 
   echo "$result"
+
+  if [ "$(git rev-parse HEAD)" = "$issue_base" ]; then
+    echo "Implement Agent 没有为当前 Issue 创建 commit，停止 Ralph。" >&2
+    exit 1
+  fi
+
+  review_result=$(run_codereview_push_agent "$issue_base")
+  echo "$review_result"
+  verify_pushed_head
 done
 
 refresh_ready_issues
 if [[ "$READY_ISSUES" == "[]" ]]; then
-  echo "Ralph issues complete after $MAX_ITERATIONS iterations. Starting final push agent."
-  run_push_agent
+  echo "Ralph issues complete after $MAX_ITERATIONS iterations. Every completed issue has been reviewed and pushed."
   exit 0
 fi
 

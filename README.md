@@ -11,12 +11,11 @@
 ├── .qoder/
 │   ├── skills/         # 工程技能（斜杠命令调用）
 │   ├── agents/         # 自定义 subagent（代码审查、方案提取等）
-│   ├── prompts/        # CI Code Review / 修复提示词
 │   └── hooks/          # Qoder 钩子兼容层
 ├── .githooks/          # Git pre-commit / pre-push hooks
-├── .github/workflows/  # GitHub Actions
-├── .gitlab-ci.yml      # GitLab CI
-├── scripts/            # 平台适配、质量检查和 CI Shell
+├── .github/workflows/  # GitHub Actions 确定性检查
+├── .gitlab-ci.yml      # GitLab CI 确定性检查
+├── scripts/            # Git Hooks 安装与项目质量检查入口
 ├── ralph-github/       # Ralph 循环 — GitHub 版
 └── ralph-gitlab/       # Ralph 循环 — GitLab 版
 ```
@@ -59,7 +58,7 @@
 
 ## Ralph 自动编程循环
 
-从分配给当前执行者的 issue 队列中按优先级挑选 `ready-for-agent` 任务，交给 Agent 实现、测试、提交并关闭。每个 issue 只 commit、不 push；列表为空后启动第二个 Push Agent，统一执行 push。GitHub 入口直接使用 `gh`，GitLab 入口直接使用 `glab`。
+从分配给当前执行者的 issue 队列中按优先级挑选 `ready-for-agent` 任务。每个 issue 都串行完成“实现、测试、commit、关闭 → 本地 Code Review、改进、commit、push”，确认远端已经包含当前 HEAD 后才领取下一个 issue。GitHub 入口直接使用 `gh`，GitLab 入口直接使用 `glab`。
 
 ```bash
 # 单次运行
@@ -76,7 +75,7 @@
 
 支持 `qodercli`、`claude`、`codex` 三种适配器。默认查询分配给 `@me` 的任务，可通过 `RALPH_ASSIGNEE=<username>` 覆盖。
 
-任务实现行为在 `ralph-*/implements_prompt.md` 中定义，最终 push 行为在 `ralph-*/push-prompt.md` 中定义。
+任务实现行为在 `ralph-*/implements_prompt.md` 中定义；本轮 Code Review、改进与 push 行为在 `ralph-*/codereview-push.md` 中定义。
 
 ## Git Hooks 与项目检查
 
@@ -96,34 +95,47 @@ scripts/check-test.sh       # lint + type check
 scripts/check-coverage.sh   # unit tests + coverage gate
 ```
 
-## CI Code Review
+## 每个 Issue 的本地 Code Review
 
-GitHub Actions 和 GitLab CI 都按以下流程运行：
+AFK 在每轮实现前记录 `ISSUE_BASE`，Implement Agent 完成当前 Issue 后立即启动第二个本地 Agent：
 
 ```text
-确定性检查
+记录 ISSUE_BASE
     ↓
-以本次 push 之前的 SHA 为 fixed point
+实现、测试、commit、关闭当前 Issue
     ↓
-审查 fixed-point...HEAD 的全部 commits
+审查 ISSUE_BASE...HEAD
     ↓
-读取这些 commits 引用的全部 issues（包括已关闭 issue）
+最多三轮 Review → 改进 → 验证 → commit
     ↓
-Prompt 内最多三轮 Review → 修复 → 验证 → commit
+即使仍有 Review 建议也继续推进
     ↓
-Shell 将修复 commits push 回当前分支
+pre-push 检查并 push
+    ↓
+确认远端包含当前 HEAD 后领取下一个 Issue
 ```
 
-- GitHub 入口：`.github/workflows/verify.yml`
-- GitLab 入口：`.gitlab-ci.yml`
-- 公共 Shell：`scripts/ci/code-review-fix.sh`
-- 公共 Prompt：`scripts/ci/code-review-fix_prompt.md`
+Code Review 是代码质量改进，不是 push 门禁；三轮后剩余建议会被记录，但不会阻止 push。真实测试、覆盖率、Git 状态、认证、网络或远程拒绝仍然可以阻止 push。AI Code Review 不在 CI/CD 中运行，避免远端 Agent 与本地 AFK 同时修改同一分支。
 
-CI Runner 必须预装并认证选定的 Agent CLI，并具备读取 issues、向当前分支 push 的权限。通过 `AI_AGENT_ADAPTER` 选择 `qodercli`、`claude` 或 `codex`。
+## CI/CD
+
+CI/CD 配置继续保留，但不再运行 AI Code Review 或自动修改分支：
+
+- GitHub Actions：`.github/workflows/verify.yml`
+- GitLab CI：`.gitlab-ci.yml`
+
+两个入口都只调用项目的确定性检查：
+
+```text
+scripts/check-test.sh
+scripts/check-coverage.sh
+```
+
+实际项目可以继续在对应文件中增加 build、integration test、security scan 和 deploy 等阶段；这些 CI/CD 职责与本地 AI Code Review 相互独立。
 
 ## 快速使用
 
-将 `.qoder`、`.githooks`、`scripts` 和对应平台的 Ralph/CI 文件复制到目标项目：
+将 `.qoder`、`.githooks`、`scripts`、对应平台的 Ralph 和 CI/CD 文件复制到目标项目：
 
 ```bash
 # GitHub 版
@@ -144,7 +156,7 @@ git clone --depth=1 https://github.com/astordu/qoderharness /tmp/qh \
   && rm -rf /tmp/qh
 ```
 
-> ⚠️ 目标项目中若已存在同名目录或 CI 文件，复制前先合并配置，不要直接覆盖。
+> ⚠️ 目标项目中若已存在同名目录或 CI/CD 文件，复制前先合并配置，不要直接覆盖。
 
 ## 致谢
 
